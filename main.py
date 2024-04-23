@@ -51,7 +51,7 @@ def animated_map(data):
     fig = px.scatter_geo(data,
                          lat='LATITUDE',
                          lon='LONGITUDE',
-                         color='EVENT_TYPE',
+                         color='SUB_EVENT_TYPE',
                          hover_name='EVENT_TYPE',
                          hover_data=['FATALITIES', 'NOTES'],
                          animation_frame='YEAR',

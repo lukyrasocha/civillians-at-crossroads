@@ -108,9 +108,6 @@ def animated_map(data):
     )
     return fig
 
-st.title('Echoes of Conflict: Look at Turbulence in the Black Sea Region caused by the Russian-Ukrainian War')
-st.write("This dashboard displays visualizations of events in the Black Sea region.")
-
 # Display the figures in the Streamlit app
 st.title('Event Animation')
 

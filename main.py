@@ -37,9 +37,9 @@ def animate_yearly_event(data):
     event_type_counts = data.groupby(['YEAR', 'EVENT_TYPE']).size().reset_index(name='count')
 
     # Animated distribution of each individual event type over years
-    fig = px.bar(event_type_counts, x='EVENT_TYPE', y='count', color='EVENT_TYPE', 
+    fig = px.bar(event_type_counts, x='EVENT_TYPE', y='count', color='EVENT_TYPE',
                 animation_frame='YEAR', animation_group='EVENT_TYPE',
-                range_y=[0, event_type_counts['count'].max()], 
+                range_y=[0, event_type_counts['count'].max()],
                 labels={'count':'Number of Events'})
     fig.update_layout(title="Distribution of Event Types over Years")
     return fig
@@ -69,7 +69,7 @@ def animated_map(data):
     )
     return fig
 
-st.title('Echoes of Conflict: Look at Turbulence in the Black Sea Region caused by the Russian-Ukrainian War')
+st.title('Data From The Frontlines: Unveiling the dynamics of conflicts in Ukraine and the Black Sea region')
 st.write("This dashboard displays visualizations of events in the Black Sea region.")
 
 # Display Altair chart

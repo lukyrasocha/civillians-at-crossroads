@@ -130,10 +130,6 @@ explosions_by_year_subtype = explosions.groupby(['YEAR', 'SUB_EVENT_TYPE']).size
 st.title('Change of Explosions/Remote violence types over the Years')
 st.bar_chart(explosions_by_year_subtype, use_container_width=True)
 
-# Provide context about the Russia vs Ukraine conflict
-st.write("The conflict between Russia and Ukraine witnessed a steady employment of shelling, artillery, and missiles from 2018 to 2021. However, a notable surge in these activities occurred in 2022 and 2023, marked by a significant increase in the frequency and intensity of such attacks.")
-st.write("Moreover, the years 2022 and 2023 saw a pronounced rise in the utilization of modern air and drone strikes, suggesting a shift towards more technologically advanced warfare strategies.")
-st.write("This trend underscores the evolving nature of the conflict and highlights the increasing reliance on advanced weaponry and aerial capabilities by both parties involved.")
 
 # fatalities map
 def animated_fatalities_map(data):
@@ -165,6 +161,49 @@ def animated_fatalities_map(data):
     return fig
 
 
+st.title('Civilians at the Crossroads: The Human Cost of Conflict in the Black Sea Region')
+
+#st.markdown("## Geopolitical Significance of the Black Sea Region")
+
+st.markdown("The Black Sea region, a pivotal area due to its strategic geopolitical location and rich history, has become an arena for modern conflict and power struggles, particularly impacting Ukraine. In recent years, this area has witnessed an escalation in political violence, deeply affecting the lives of countless civilians.")
+
+st.markdown("This narrative aims to shed light on the human cost of these conflicts. By delving into data on various types of events such as battles, violent demonstrations, and other forms of political violence, we seek to understand not just the frequency and types of these events, but their profound impact on civilian populations. From fatalities and injuries to displacement, the ripple effects of these conflicts reach far beyond the immediate areas of unrest, affecting aspects of daily life, economic stability, and regional security.")
+
+st.markdown('## Event Type Distribution')
+
+# Display Altair chart
+event_type_chart = plot_event_type_distribution(data)
+st.altair_chart(event_type_chart, use_container_width=True)
+
+# Display the figures in the Streamlit app
+st.markdown('## Event Animation')
+
+
+animated_bar_fig = animate_yearly_event(data)
+st.plotly_chart(animated_bar_fig)
+
+animated_geo_fig = animated_map(data)
+st.plotly_chart(animated_geo_fig)
+
+# casualities_Jahidul
+# Filter rows with 'Explosions/Remote violence' event type
+explosions = data[data['EVENT_TYPE'] == 'Explosions/Remote violence']
+
+# Group by 'YEAR' and 'SUB_EVENT_TYPE', and count occurrences for each year and sub-type
+explosions_by_year_subtype = explosions.groupby(['YEAR', 'SUB_EVENT_TYPE']).size().unstack(fill_value=0)
+
+# Plot the change of 'Explosions/Remote violence' sub-types over the years
+st.markdown('## Change of Explosions/Remote violence types over the Years')
+st.bar_chart(explosions_by_year_subtype, use_container_width=True)
+
+
+
+
 # Display the animated map
 fig = animated_fatalities_map(data)
 st.plotly_chart(fig)
+
+st.markdown("## References")
+st.markdown("1. [ACLED](https://acleddata.com/)")
+st.markdown("2. [A brief history of the importance of Black Sea Region](https://www.csis.org/analysis/geostrategic-importance-black-sea-region-brief-history)")
+st.markdown("3. [A security strategy for the Black Sea](https://www.atlanticcouncil.org/in-depth-research-reports/report/a-security-strategy-for-the-black-sea/)")

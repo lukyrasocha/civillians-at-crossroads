@@ -130,6 +130,10 @@ explosions_by_year_subtype = explosions.groupby(['YEAR', 'SUB_EVENT_TYPE']).size
 st.title('Change of Explosions/Remote violence types over the Years')
 st.bar_chart(explosions_by_year_subtype, use_container_width=True)
 
+# Provide context about the Russia vs Ukraine conflict
+st.write("The conflict between Russia and Ukraine witnessed a steady employment of shelling, artillery, and missiles from 2018 to 2021. However, a notable surge in these activities occurred in 2022 and 2023, marked by a significant increase in the frequency and intensity of such attacks.")
+st.write("Moreover, the years 2022 and 2023 saw a pronounced rise in the utilization of modern air and drone strikes, suggesting a shift towards more technologically advanced warfare strategies.")
+st.write("This trend underscores the evolving nature of the conflict and highlights the increasing reliance on advanced weaponry and aerial capabilities by both parties involved.")
 
 # fatalities map
 def animated_fatalities_map(data):

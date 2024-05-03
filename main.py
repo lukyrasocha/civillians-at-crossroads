@@ -4,6 +4,9 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 import altair as alt
+import seaborn as sns
+
+
 
 
 # Load data
@@ -17,6 +20,10 @@ def load_data():
 
 
 data = load_data()
+
+# Extract month and year from 'EVENT_DATE'
+data['MONTH'] = data['EVENT_DATE'].dt.month
+data['YEAR'] = data['EVENT_DATE'].dt.year
 
 # Altair Visualization: Event Type Distribution
 
@@ -163,6 +170,32 @@ def animated_fatalities_map(data):
         font=dict(color='white'),  # Set font color to white
     )
     return fig
+
+#fatalities heatmap
+
+# Pivot the data to create a heatmap
+heatmap_data = data.pivot_table(index='MONTH', columns='YEAR', values='FATALITIES', aggfunc='sum')
+
+# Create the Streamlit app
+st.title('Fatalities Heatmap')
+
+# Plot the heatmap
+plt.figure(figsize=(10, 6))
+ax = sns.heatmap(heatmap_data, cmap='Reds', annot=True, fmt='g', linewidths=0.5)
+
+# Get the range of years present in the data
+years_range = heatmap_data.columns.tolist()
+
+# Set ticks and labels for the x-axis based on the range of years
+ax.set_xticks(range(len(years_range)))
+ax.set_xticklabels(years_range, rotation=45)
+
+plt.title('Distribution of Fatalities by Month and Year')
+plt.xlabel('Year')
+plt.ylabel('Month')
+
+# Display the heatmap in the Streamlit app
+st.pyplot(plt.gcf())
 
 
 st.title('Civilians at the Crossroads: The Human Cost of Conflict in the Black Sea Region')

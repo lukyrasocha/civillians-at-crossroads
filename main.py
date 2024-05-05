@@ -160,7 +160,7 @@ st.markdown('## Event Animation')
 animated_bar_fig = animate_yearly_event(data)
 st.plotly_chart(animated_bar_fig)
 
-animated_geo_fig = animated_map(data)
+animated_geo_fig = animated_map(filtered, gdf)
 st.plotly_chart(animated_geo_fig)
 
 # casualities_Jahidul

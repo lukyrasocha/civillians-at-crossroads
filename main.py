@@ -8,6 +8,9 @@ import matplotlib.pyplot as plt
 import plotly.graph_objects as go
 import geopandas as gpd
 import seaborn as sns
+import networkx as nx
+import nx_altair as nxa
+
 
 from math import radians, cos, sin, asin, sqrt, log
 
@@ -102,8 +105,12 @@ def animated_map(data, gdf):
         geo=dict(
             center=dict(lat=47.2, lon=31.1),  # You can adjust these values to focus on your region of interest
             scope='europe',  # Change this as necessary
-            projection_scale=5.5  # Adjust the scale for a better view
-        )
+            projection_scale=5.5,  # Adjust the scale for a better view
+            bgcolor='rgba(0, 0, 0, 0)',  # Set background color to transparent
+        ),
+        plot_bgcolor='rgba(0, 0, 0, 0)',  # Set plot background color to transparent
+        paper_bgcolor='rgba(0, 0, 0, 0)',  # Set paper background color to transparent
+        font=dict(color='white'),  # Set font color to white
     )
 
     return scatter_geo
@@ -116,6 +123,35 @@ gdf = gpd.read_file('region.geojson')
 # Extract month and year from 'EVENT_DATE'
 data['MONTH'] = data['EVENT_DATE'].dt.month
 data['YEAR'] = data['EVENT_DATE'].dt.year
+
+# Create a DataFrame for interactions with sum of fatalities
+edges = data.groupby(['ACTOR1', 'ACTOR2'])['FATALITIES'].sum().reset_index()
+
+# Filter edges to only include those with fatalities above a certain threshold and select top 20
+threshold_fatalities = edges['FATALITIES'].quantile(0.95)  # Adjust threshold as needed
+filtered_edges = edges[edges['FATALITIES'] > threshold_fatalities].nlargest(20, 'FATALITIES')
+
+# Create the graph with filtered data
+G = nx.from_pandas_edgelist(filtered_edges, 'ACTOR1', 'ACTOR2', ['FATALITIES'])
+
+# Add attributes to each node.
+for n in G.nodes():
+    G.nodes[n]['name'] = n
+    G.nodes[n]['fatalities_caused'] = data[data['ACTOR1'] == n]['FATALITIES'].sum()
+
+
+def draw_graph(G):
+    # Position nodes using the spring layout algorithm
+    pos = nx.spring_layout(G, seed=22)
+
+    # Draw nodes and edges and show weights
+    viz = nxa.draw_networkx(G, pos=pos, edge_color='white',
+                            node_color="fatalities_caused",
+                            cmap='blues',
+                            width='FATALITIES:Q',
+                            node_tooltip=['name', 'fatalities_caused'])
+
+    return viz
 
 # fatalities map
 
@@ -154,15 +190,26 @@ st.title('Civilians at the Crossroads: The Human Cost of Conflict in the Black S
 # st.markdown("## Geopolitical Significance of the Black Sea Region")
 
 st.markdown("The Black Sea region, an important area due to its strategic geopolitical location and rich history, has become an arena for modern conflict and power struggles, particularly impacting Ukraine. In recent years, this area has witnessed an escalation in political violence, deeply affecting the lives of countless civilians.")
-st.markdown("> *“We’ve seen more people hiding again in the nearby shelter because of the air raids. The fear is still here because the war continues, and we, as civilians, are still a target”* – A civilian in Ukraine interviewed by CIVIC")
+st.markdown(
+    "> *“We’ve seen more people hiding again in the nearby shelter because of the air raids. The fear is still here because the war continues, and we, as civilians, are still a target”* – A civilian in Ukraine interviewed by CIVIC [2].")
 
-st.markdown("This narrative aims to shed light on the human cost of these conflicts. By looking into data on various types of events such as battles, violent demonstrations, and other forms of political violence. We will tell the story not just about the frequency and types of these events, but their profound impact on civilian populations, from fatalities and injuries to displacement.")
+st.markdown(
+    "This narrative aims to shed light on the human cost of these conflicts. By looking into data [1] on various types of events such as battles, violent demonstrations, and other forms of political violence. We will tell the story not just about the frequency and types of these events, but their profound impact on civilian populations, from fatalities and injuries to displacement. [2]")
 
 st.markdown('## Event Type Distribution')
 
 # Display Altair chart
 event_type_chart = plot_event_type_distribution(data)
 st.altair_chart(event_type_chart, use_container_width=True)
+
+
+st.markdown('## Who is responsible?')
+
+# Call the function to draw the graph
+graph_viz = draw_graph(G)
+
+# Use Streamlit components to display the visualization
+st.altair_chart(graph_viz, use_container_width=True)
 
 # Display the figures in the Streamlit app
 st.markdown('## Event Animation')
@@ -223,7 +270,7 @@ plt.ylabel('Month')
 # Display the heatmap in the Streamlit app
 st.pyplot(plt.gcf())
 
+
 st.markdown("## References")
 st.markdown("1. [ACLED](https://acleddata.com/)")
-st.markdown("2. [A brief history of the importance of Black Sea Region](https://www.csis.org/analysis/geostrategic-importance-black-sea-region-brief-history)")
-st.markdown("3. [A security strategy for the Black Sea](https://www.atlanticcouncil.org/in-depth-research-reports/report/a-security-strategy-for-the-black-sea/)")
+st.markdown("2. [War in Ukraine: Two Years On, Attacks Against Civilians on the Rise Again](https: // reliefweb.int/report/ukraine/war-ukraine-two-years-attacks-against-civilians-rise-again)")

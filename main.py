@@ -153,9 +153,10 @@ st.title('Civilians at the Crossroads: The Human Cost of Conflict in the Black S
 
 # st.markdown("## Geopolitical Significance of the Black Sea Region")
 
-st.markdown("The Black Sea region, a pivotal area due to its strategic geopolitical location and rich history, has become an arena for modern conflict and power struggles, particularly impacting Ukraine. In recent years, this area has witnessed an escalation in political violence, deeply affecting the lives of countless civilians.")
+st.markdown("The Black Sea region, an important area due to its strategic geopolitical location and rich history, has become an arena for modern conflict and power struggles, particularly impacting Ukraine. In recent years, this area has witnessed an escalation in political violence, deeply affecting the lives of countless civilians.")
+st.markdown("> *“We’ve seen more people hiding again in the nearby shelter because of the air raids. The fear is still here because the war continues, and we, as civilians, are still a target”* – A civilian in Ukraine interviewed by CIVIC")
 
-st.markdown("This narrative aims to shed light on the human cost of these conflicts. By delving into data on various types of events such as battles, violent demonstrations, and other forms of political violence, we seek to understand not just the frequency and types of these events, but their profound impact on civilian populations. From fatalities and injuries to displacement, the ripple effects of these conflicts reach far beyond the immediate areas of unrest, affecting aspects of daily life, economic stability, and regional security.")
+st.markdown("This narrative aims to shed light on the human cost of these conflicts. By looking into data on various types of events such as battles, violent demonstrations, and other forms of political violence. We will tell the story not just about the frequency and types of these events, but their profound impact on civilian populations, from fatalities and injuries to displacement.")
 
 st.markdown('## Event Type Distribution')
 

@@ -2,6 +2,9 @@ import json
 import pandas as pd
 import numpy as np
 import altair as alt
+import seaborn as sns
+
+
 import streamlit as st
 import plotly.express as px
 import matplotlib.pyplot as plt
@@ -23,6 +26,10 @@ def filter(data):
     filtered_data = data[data['SUB_EVENT_TYPE'].isin(top_5_subevent_types)]
     filtered_data = filtered_data.sort_values(by='YEAR')
     return filtered_data
+
+# Extract month and year from 'EVENT_DATE'
+data['MONTH'] = data['EVENT_DATE'].dt.month
+data['YEAR'] = data['EVENT_DATE'].dt.year
 
 # Altair Visualization: Event Type Distribution
 
@@ -109,6 +116,72 @@ data = load_data()
 filtered = filter(data)
 gdf = gpd.read_file('region.geojson')
 
+
+st.title('Data From The Frontlines: Unveiling the dynamics of conflicts in Ukraine and the Black Sea region')
+st.write("This dashboard displays visualizations of events in the Black Sea region.")
+
+# Display Altair chart
+event_type_chart = plot_event_type_distribution(data)
+st.altair_chart(event_type_chart, use_container_width=True)
+
+# Display the figures in the Streamlit app
+st.title('Event Animation')
+
+
+animated_bar_fig = animate_yearly_event(data)
+st.plotly_chart(animated_bar_fig)
+
+animated_geo_fig = animated_map(data)
+st.plotly_chart(animated_geo_fig)
+
+# fatalities animation
+
+
+def animated_map(data):
+    fig = px.scatter_geo(data,
+                         lat='LATITUDE',
+                         lon='LONGITUDE',
+                         color='SUB_EVENT_TYPE',
+                         hover_name='EVENT_TYPE',
+                         hover_data=['FATALITIES', 'NOTES'],
+                         animation_frame='YEAR',
+                         animation_group='EVENT_TYPE',
+                         projection="natural earth",
+                         title='Map of Events by Year and Event Type')
+    fig.update_layout(
+        autosize=True,
+        height=600,
+        geo=dict(
+            center=dict(lat=47.2, lon=31.1),  # You can adjust these values to focus on your region of interest
+            scope='europe',  # Change this as necessary
+            projection_scale=3  # Adjust the scale for a better view
+        )
+    )
+    return fig
+
+
+# Display the figures in the Streamlit app
+st.title('Event Animation')
+
+animated_geo_fig = animated_map(data)
+st.plotly_chart(animated_geo_fig)
+
+# casualities_Jahidul
+# Filter rows with 'Explosions/Remote violence' event type
+explosions = data[data['EVENT_TYPE'] == 'Explosions/Remote violence']
+
+# Group by 'YEAR' and 'SUB_EVENT_TYPE', and count occurrences for each year and sub-type
+explosions_by_year_subtype = explosions.groupby(['YEAR', 'SUB_EVENT_TYPE']).size().unstack(fill_value=0)
+
+# Plot the change of 'Explosions/Remote violence' sub-types over the years
+st.title('Change of Explosions/Remote violence types over the Years')
+st.bar_chart(explosions_by_year_subtype, use_container_width=True)
+
+# Provide context about the Russia vs Ukraine conflict
+st.write("The conflict between Russia and Ukraine witnessed a steady employment of shelling, artillery, and missiles from 2018 to 2021. However, a notable surge in these activities occurred in 2022 and 2023, marked by a significant increase in the frequency and intensity of such attacks.")
+st.write("Moreover, the years 2022 and 2023 saw a pronounced rise in the utilization of modern air and drone strikes, suggesting a shift towards more technologically advanced warfare strategies.")
+st.write("This trend underscores the evolving nature of the conflict and highlights the increasing reliance on advanced weaponry and aerial capabilities by both parties involved.")
+
 # fatalities map
 def animated_fatalities_map(data):
     # Filter out data points where fatalities are 0
@@ -137,6 +210,32 @@ def animated_fatalities_map(data):
         font=dict(color='white'),  # Set font color to white
     )
     return fig
+
+#fatalities heatmap
+
+# Pivot the data to create a heatmap
+heatmap_data = data.pivot_table(index='MONTH', columns='YEAR', values='FATALITIES', aggfunc='sum')
+
+# Create the Streamlit app
+st.title('Fatalities Heatmap')
+
+# Plot the heatmap
+plt.figure(figsize=(10, 6))
+ax = sns.heatmap(heatmap_data, cmap='Reds', annot=True, fmt='g', linewidths=0.5)
+
+# Get the range of years present in the data
+years_range = heatmap_data.columns.tolist()
+
+# Set ticks and labels for the x-axis based on the range of years
+ax.set_xticks(range(len(years_range)))
+ax.set_xticklabels(years_range, rotation=45)
+
+plt.title('Distribution of Fatalities by Month and Year')
+plt.xlabel('Year')
+plt.ylabel('Month')
+
+# Display the heatmap in the Streamlit app
+st.pyplot(plt.gcf())
 
 
 st.title('Civilians at the Crossroads: The Human Cost of Conflict in the Black Sea Region')

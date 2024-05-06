@@ -57,10 +57,43 @@ def plot_population_distribution(data):
     return chart
 
 
-def plo_average_population(data):
+def plot_population_distribution2(data):
+    data['POPULATION_1KM'].fillna(0, inplace=True)  # Replace NaN with 0 or handle appropriately
+    # Create a histogram of the POPULATION_1KM column
+    fig = px.histogram(data, x='POPULATION_1KM',
+                       title='Distribution of Population within 1 km of Conflict Events',
+                       labels={'POPULATION_1KM': 'Population within 1 km'},  # Label for the x-axis
+                       nbins=50,  # Number of bins can be adjusted based on the data range and distribution
+                       marginal='box',  # Adds a box plot above the histogram for summary statistics
+                       color_discrete_sequence=['indianred'])  # Color of the histogram bars
+
+    return fig
+
+
+def plot_average_population(data):
     # Calculate the average population best for each sub-event type
-    average_population_distance = data.groupby('SUB_EVENT_TYPE')['POPULATION_BEST'].mean().reset_index()
-    average_population_distance.sort_values('POPULATION_BEST', ascending=True, inplace=True)
+    # Where event type is not Protest
+
+    data = data[data['EVENT_TYPE'] != 'Protest']
+    # where sub event type does not contain 'Protest' or 'demonstration
+    data = data[~data['SUB_EVENT_TYPE'].str.contains('Protest|demonstration|protest|Mob|Agreement')]
+
+    average_population_distance = data.groupby('SUB_EVENT_TYPE')['POPULATION_1KM'].mean().reset_index()
+    average_population_distance.sort_values('POPULATION_1KM', ascending=True, inplace=True)
+
+    # Round the average population distance to 0 decimal places
+    average_population_distance['POPULATION_1KM'] = average_population_distance['POPULATION_1KM'].round(0)
+
+    # Include only non-zero values
+    average_population_distance = average_population_distance[average_population_distance['POPULATION_1KM'] > 0]
+
+    # Create a bar chart
+    fig = px.bar(average_population_distance, x='SUB_EVENT_TYPE', y='POPULATION_1KM',
+                 title='Average Proximity of Sub-Event Types to Populations',
+                 labels={'POPULATION_BEST': 'Average Population Distance (Best Estimate)',
+                         'SUB_EVENT_TYPE': 'Sub-Event Type'})
+
+    return fig
 
 
 def plot_violence_against_civilians(data):
@@ -375,8 +408,12 @@ st.plotly_chart(animated_geo_fig)
 
 # display the distribution of POPULATION_1KM
 st.markdown('### Population Distribution')
-population_distribution = plot_population_distribution(data)
+population_distribution = plot_population_distribution2(data)
 st.altair_chart(population_distribution)
+
+st.markdown('### Average Proximity of Sub-Event Types to Populations')
+average_population = plot_average_population(data)
+st.plotly_chart(average_population)
 
 
 # Provide context about the Russia vs Ukraine conflict

@@ -4,3 +4,7 @@ pandas
 numpy
 matplotlib
 altair
+geopandas
+seaborn
+networkx
+nx_altair

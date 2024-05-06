@@ -36,12 +36,15 @@ def filter(data):
 
 
 def plot_event_type_distribution(data):
-    chart = alt.Chart(data).mark_bar().encode(
-        x='count()',
-        y=alt.Y('EVENT_TYPE', sort='-x'),
+    # plot the distribution of the population 1 km, and start the x-axis from 0
+
+    chart = alt.Chart(data, width=400).mark_bar().encode(
+        y='count()',
+        x=alt.X('EVENT_TYPE', sort='-y'),
         color='EVENT_TYPE',
         tooltip=['EVENT_TYPE', 'count()']
     ).properties(title='Event Type Distribution')
+
     return chart
 
 # Plot distribution of POPULATION_1KM to see in total the number of events happen in the area
@@ -56,16 +59,66 @@ def plot_population_distribution(data):
     ).properties(title='Population Distribution')
     return chart
 
+# Use the timestamp to plot the events occurences per each hour of the day
 
-def plot_population_distribution2(data):
-    data['POPULATION_1KM'].fillna(0, inplace=True)  # Replace NaN with 0 or handle appropriately
-    # Create a histogram of the POPULATION_1KM column
-    fig = px.histogram(data, x='POPULATION_1KM',
-                       title='Distribution of Population within 1 km of Conflict Events',
-                       labels={'POPULATION_1KM': 'Population within 1 km'},  # Label for the x-axis
-                       nbins=50,  # Number of bins can be adjusted based on the data range and distribution
-                       marginal='box',  # Adds a box plot above the histogram for summary statistics
-                       color_discrete_sequence=['indianred'])  # Color of the histogram bars
+
+def plot_event_times(data):
+    # USE THE TIMESTAMP COLUMN TO PLOT THE EVENTS OCCURENCES PER EACH HOUR OF THE DAY
+    # Convert TIMESTAMP to datetime if it's in Unix time (assuming it is)
+    data['TIMESTAMP'] = pd.to_datetime(data['TIMESTAMP'], unit='s')
+
+    # Extract the hour from each timestamp
+    data['HOUR'] = data['TIMESTAMP'].dt.hour
+    hourly_counts = data.groupby('HOUR').size().reset_index(name='COUNT')
+
+    # Create a bar chart
+    fig = px.bar(hourly_counts, x='HOUR', y='COUNT',
+                 title='Event Occurrences by Hour of the Day',
+                 labels={'HOUR': 'Hour of the Day', 'COUNT': 'Number of Events'},
+                 color='COUNT',
+                 color_continuous_scale=px.colors.sequential.OrRd)  # px.colors.sequential.Viridis)  # Use a color scale for visual appeal
+
+    return fig
+
+
+# Plot event times as a calendar heatmap where on x-axis we have the day of the week and on y-axis the hour of the day
+
+def plot_event_times_heatmap(data):
+    # Extract the day of the week and hour of the day from the timestamp
+    data['DAY'] = data['TIMESTAMP'].dt.day_name()
+    data['HOUR'] = data['TIMESTAMP'].dt.hour
+
+    # Group by day and hour to count occurrences
+    day_hour_counts = data.groupby(['DAY', 'HOUR']).size().reset_index(name='COUNT')
+
+    # Create a calendar heatmap
+    fig = px.imshow(day_hour_counts.pivot('DAY', 'HOUR', 'COUNT'),
+                    labels=dict(color='Number of Events'),
+                    color_continuous_scale=px.colors.sequential.OrRd,
+                    title='Event Occurrences by Day and Hour of the Day')
+
+    return fig
+
+# Evolution of protests over time
+
+
+def plot_protests_over_time(data):
+    # Filter the data for protests
+    protests = data[data['EVENT_TYPE'] == 'Protests']
+
+    # Group by year and month to count occurrences
+    date_counts = protests.groupby([protests['EVENT_DATE'].dt.to_period('M')]).size().reset_index(name='COUNT')
+    date_counts['EVENT_DATE'] = date_counts['EVENT_DATE'].dt.to_timestamp()
+
+    # Create a line plot with larger width
+    fig = px.line(date_counts, x='EVENT_DATE', y='COUNT',
+                  title='Trends in Protests Over Time',
+                  labels={'EVENT_DATE': 'Date', 'COUNT': 'Number of Protests'})
+
+    fig.update_traces(line=dict(width=1))
+
+    # update colour
+    fig.update_traces(line=dict(color='white'))
 
     return fig
 
@@ -248,6 +301,49 @@ def animated_map(data, gdf):
     return scatter_geo
 
 
+def create_strip_plot(data):
+    data['TIMESTAMP'] = pd.to_datetime(data['TIMESTAMP'], unit='s')
+
+    # Calculate the minute of the day
+    data['MINUTE_OF_DAY'] = data['TIMESTAMP'].dt.hour * 60 + data['TIMESTAMP'].dt.minute
+    # Create a figure with a specified figure size and facecolor
+    plt.figure(figsize=(10, 6))
+    plt.style.use({'figure.facecolor': '#0f1116'})
+    plt.rcParams["font.family"] = "serif"
+
+    # Adjust axes appearances
+    ax = plt.axes()
+    ax.set_facecolor("#0f1116")
+    ax.spines['top'].set_visible(False)
+    ax.spines['right'].set_visible(False)
+    ax.spines['bottom'].set_visible(False)
+    ax.spines['left'].set_visible(False)
+
+    # Create a strip plot with adjusted point styles
+    sns.stripplot(x='MINUTE_OF_DAY', data=data, jitter=0.35, color="white", linewidth=0.1, marker='o', size=1.5)
+
+    # Set labels and titles with custom colors (optional)
+    # plt.title('Event Occurrences Throughout the Day', color='white')
+    plt.xlabel('Time of Day', color='white')
+    # plt.ylabel('Event Count', color='white')
+
+    # Set x-axis ticks to display hours, with custom colors
+    hour_ticks = range(0, 1441, 60)  # From minute 0 to 1440 (24 hours), step by 60 minutes
+    hour_labels = [f'{i}:00' for i in range(25)]  # Generate labels from '0:00' to '24:00'
+    plt.xticks(hour_ticks, hour_labels, rotation=45, color='white')
+
+    # Adjust tick colors for both axes
+    plt.tick_params(axis='both', colors='white')
+
+    # Ensure layout is tight so everything fits
+    plt.tight_layout()
+
+    # Instead of plt.show(), return the figure to be used by Streamlit
+    return plt.gcf()
+
+# This function can now be used in a Streamlit app
+
+
 ############################
 # DATA PREPARATION AND FILTERING
 ############################
@@ -408,18 +504,42 @@ st.plotly_chart(animated_geo_fig)
 
 # display the distribution of POPULATION_1KM
 st.markdown('### Population Distribution')
-population_distribution = plot_population_distribution2(data)
+
+population_distribution = plot_population_distribution(data)
+
 st.altair_chart(population_distribution)
 
 st.markdown('### Average Proximity of Sub-Event Types to Populations')
 average_population = plot_average_population(data)
 st.plotly_chart(average_population)
 
+# Protests over time
 
-# Provide context about the Russia vs Ukraine conflict
-st.write("The conflict between Russia and Ukraine witnessed a steady employment of shelling, artillery, and missiles from 2018 to 2021. However, a notable surge in these activities occurred in 2022 and 2023, marked by a significant increase in the frequency and intensity of such attacks.")
-st.write("Moreover, the years 2022 and 2023 saw a pronounced rise in the utilization of modern air and drone strikes, suggesting a shift towards more technologically advanced warfare strategies.")
-st.write("This trend underscores the evolving nature of the conflict and highlights the increasing reliance on advanced weaponry and aerial capabilities by both parties involved.")
+st.markdown('### Protests Over Time')
+protests_over_time = plot_protests_over_time(data)
+
+st.plotly_chart(protests_over_time)
+
+# Generate the figure using your custom function
+fig = create_strip_plot(data)
+
+# Use Streamlit's function to display the plot
+st.pyplot(fig)
+
+html = """
+<div style='width: 100%; display: flex; justify-content: space-between; align-items: center;'>
+    <div style='display: flex; align-items: center;'>
+        <span style='height: 25px; width: 25px; background-color: #fff; border-radius: 50%; display: inline-block;'></span>
+        <p style='margin-left: 10px;'>10 people</p>
+    </div>
+    <div style='display: flex; align-items: center;'>
+        <span style='height: 25px; width: 25px; background-color: #e8a033; border-radius: 50%; display: inline-block;'></span>
+        <p style='margin-left: 10px;'>100 people</p>
+    </div>
+</div>
+"""
+st.markdown(html, unsafe_allow_html=True)
+st.image('./assets/spirals.png', caption='On the left side, we have the number of deaths, and on the right side, we have the number of refugees. One white dot represents 10 deaths, one yellow dot represents 1000 refugees.')
 
 
 st.markdown("## References")

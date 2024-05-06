@@ -44,7 +44,62 @@ def plot_event_type_distribution(data):
     ).properties(title='Event Type Distribution')
     return chart
 
-# Yearly animation plot
+# Plot distribution of POPULATION_1KM to see in total the number of events happen in the area
+
+
+def plot_population_distribution(data):
+    chart = alt.Chart(data, width=800).mark_bar().encode(
+        y='count()',
+        x=alt.Y('POPULATION_1KM', sort='-x'),
+        color='POPULATION_1KM',
+        tooltip=['POPULATION_1KM', 'count()']
+    ).properties(title='Population Distribution')
+    return chart
+
+
+def plo_average_population(data):
+    # Calculate the average population best for each sub-event type
+    average_population_distance = data.groupby('SUB_EVENT_TYPE')['POPULATION_BEST'].mean().reset_index()
+    average_population_distance.sort_values('POPULATION_BEST', ascending=True, inplace=True)
+
+
+def plot_violence_against_civilians(data):
+    # Filter the data for violence against civilians
+    # Filter the data for where EVENT_TYPE is 'Violence against civilians' or CIVILIAN_TARGETING is equal to Civilian targeting
+    violence_civilians = data[(data['EVENT_TYPE'] == 'Violence against civilians') |
+                              (data['CIVILIAN_TARGETING'] == 'Civilian targeting')]
+
+    # Convert EVENT_DATE to datetime if it hasn't been done already
+    violence_civilians['EVENT_DATE'] = pd.to_datetime(violence_civilians['EVENT_DATE'])
+
+    # Filter where year is 2021 >
+    violence_civilians = violence_civilians[violence_civilians['YEAR'] >= 2021]
+
+    # Group by date and sub-event type to count occurrences
+    date_sub_event_counts = violence_civilians.groupby(
+        [violence_civilians['EVENT_DATE'].dt.to_period('M'),
+         'SUB_EVENT_TYPE']).size().reset_index(
+        name='COUNT')
+    # Convert back to timestamp for plotting
+    date_sub_event_counts['EVENT_DATE'] = date_sub_event_counts['EVENT_DATE'].dt.to_timestamp()
+
+    fig = px.line(
+        date_sub_event_counts,
+        x='EVENT_DATE',
+        y='COUNT',
+        color='SUB_EVENT_TYPE',  # Different lines for different sub-event types
+        title='Trends in Violence Against Civilians by Sub-Event Type',
+        labels={'EVENT_DATE': 'Date', 'COUNT': 'Number of Occurrences', 'SUB_EVENT_TYPE': 'Category'}
+    )
+
+    # Update layout for better readability
+    fig.update_layout(
+        xaxis_title="Date",
+        yaxis_title="Number of Occurrences",
+        legend_title="Category"
+    )
+
+    return fig
 
 
 def animate_yearly_event(data):
@@ -128,7 +183,7 @@ def animated_map(data, gdf):
         z=[0] * len(gdf),  # Replace with your data
         hovertext=gdf['name'],  # Add hover text
         hoverinfo='text',  # Show only hover text
-        marker_line=dict(width=1, color='red'),  # Set marker line width to 1 to display only the outline
+        marker_line=dict(width=1, color='grey'),  # Set marker line width to 1 to display only the outline
         showscale=False
     ))
 
@@ -234,13 +289,28 @@ def event_type_and_fatalities(data):
     return fig
 
 
+# correlation plot between population and fatalities
+def plot_correlation(data):
+    # Check for missing values and fill or remove them
+    data['FATALITIES'].fillna(0, inplace=True)
+    data['POPULATION_1KM'].fillna(data['POPULATION_1KM'].mean(), inplace=True)
+    data['POPULATION_2KM'].fillna(data['POPULATION_2KM'].mean(), inplace=True)
+    data['POPULATION_5KM'].fillna(data['POPULATION_5KM'].mean(), inplace=True)
+
+    # Create scatter plots
+    fig = px.scatter(data, x='POPULATION_1KM', y='FATALITIES', trendline='ols',
+                     title='Fatalities vs. Population within 1km')
+
+    return fig
+
+
 # Create the graph with filtered data
 G = nx.from_pandas_edgelist(filtered_edges, 'ACTOR1', 'ACTOR2', ['FATALITIES'])
 
 # Add attributes to each node.
 for n in G.nodes():
     G.nodes[n]['name'] = n
-    G.nodes[n]['fatalities_caused'] = data[data['ACTOR1'] == n]['FATALITIES'].sum()
+    G.nodes[n]['Fatalities caused'] = data[data['ACTOR1'] == n]['FATALITIES'].sum()
 
 
 def draw_graph(G):
@@ -249,10 +319,10 @@ def draw_graph(G):
 
     # Draw nodes and edges and show weights
     viz = nxa.draw_networkx(G, pos=pos, edge_color='white',
-                            node_color="fatalities_caused",
+                            node_color="Fatalities caused",
                             cmap='oranges',
                             width='FATALITIES:Q',
-                            node_tooltip=['name', 'fatalities_caused'])
+                            node_tooltip=['name', 'Fatalities caused'])
 
     return viz
 
@@ -290,6 +360,11 @@ st.altair_chart(graph_viz, use_container_width=True)
 
 st.markdown('### Everyday people, extraordinary circumstances')
 
+civilians_fig = plot_violence_against_civilians(data)
+
+st.plotly_chart(civilians_fig)
+
+
 st.markdown("While the broad numbers of fatalities offer a stark picture of the conflict's severity, they do not fully capture the day-to-day reality faced by civilians. To understand the true human cost, we turn our attention to incidents specifically categorized as 'Violence against civilians'. By examining the different sub-events under this category, we can see more clearly how these conflicts permeate the lives of ordinary people.")
 # Display the figures in the Streamlit app
 
@@ -297,6 +372,12 @@ st.markdown('### Nowhere is safe')
 
 animated_geo_fig = animated_map(filtered, gdf)
 st.plotly_chart(animated_geo_fig)
+
+# display the distribution of POPULATION_1KM
+st.markdown('### Population Distribution')
+population_distribution = plot_population_distribution(data)
+st.altair_chart(population_distribution)
+
 
 # Provide context about the Russia vs Ukraine conflict
 st.write("The conflict between Russia and Ukraine witnessed a steady employment of shelling, artillery, and missiles from 2018 to 2021. However, a notable surge in these activities occurred in 2022 and 2023, marked by a significant increase in the frequency and intensity of such attacks.")
@@ -306,4 +387,4 @@ st.write("This trend underscores the evolving nature of the conflict and highlig
 
 st.markdown("## References")
 st.markdown("1. [ACLED](https://acleddata.com/)")
-st.markdown("2. [War in Ukraine: Two Years On, Attacks Against Civilians on the Rise Again](https: // reliefweb.int/report/ukraine/war-ukraine-two-years-attacks-against-civilians-rise-again)")
+st.markdown("2. [War in Ukraine: Two Years On, Attacks Against Civilians on the Rise Again](https://reliefweb.int/report/ukraine/war-ukraine-two-years-attacks-against-civilians-rise-again)")

@@ -250,42 +250,13 @@ def draw_graph(G):
     # Draw nodes and edges and show weights
     viz = nxa.draw_networkx(G, pos=pos, edge_color='white',
                             node_color="fatalities_caused",
-                            cmap='reds',
+                            cmap='oranges',
                             width='FATALITIES:Q',
                             node_tooltip=['name', 'fatalities_caused'])
 
     return viz
 
 # fatalities map
-
-
-def animated_fatalities_map(data):
-    # Filter out data points where fatalities are 0
-    data_filtered = data[data['FATALITIES'] > 0]
-
-    fig = px.scatter_geo(data_filtered,
-                         lat='LATITUDE',
-                         lon='LONGITUDE',
-                         color='FATALITIES',  # Color points by fatalities number
-                         animation_frame='YEAR',
-                         projection="natural earth",
-                         title='Animated Map of Fatalities by Year',
-                         color_continuous_scale='Reds',  # Adjust color scale
-                         )
-    fig.update_layout(
-        autosize=True,
-        height=600,
-        geo=dict(
-            center=dict(lat=47.2, lon=31.1),
-            scope='europe',
-            projection_scale=3,
-            bgcolor='rgba(0, 0, 0, 0)',  # Set background color to transparent
-        ),
-        plot_bgcolor='rgba(0, 0, 0, 0)',  # Set plot background color to transparent
-        paper_bgcolor='rgba(0, 0, 0, 0)',  # Set paper background color to transparent
-        font=dict(color='white'),  # Set font color to white
-    )
-    return fig
 
 
 st.title('Civilians at the Crossroads: The Human Cost of Conflict in the Black Sea Region')
@@ -317,6 +288,9 @@ graph_viz = draw_graph(G)
 # Use Streamlit components to display the visualization
 st.altair_chart(graph_viz, use_container_width=True)
 
+st.markdown('### Everyday people, extraordinary circumstances')
+
+st.markdown("While the broad numbers of fatalities offer a stark picture of the conflict's severity, they do not fully capture the day-to-day reality faced by civilians. To understand the true human cost, we turn our attention to incidents specifically categorized as 'Violence against civilians'. By examining the different sub-events under this category, we can see more clearly how these conflicts permeate the lives of ordinary people.")
 # Display the figures in the Streamlit app
 
 st.markdown('### Nowhere is safe')

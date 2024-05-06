@@ -116,6 +116,9 @@ def animated_map(data, gdf):
     return scatter_geo
 
 
+############################
+# DATA PREPARATION AND FILTERING
+############################
 data = load_data()
 filtered = filter(data)
 gdf = gpd.read_file('region.geojson')
@@ -130,6 +133,103 @@ edges = data.groupby(['ACTOR1', 'ACTOR2'])['FATALITIES'].sum().reset_index()
 # Filter edges to only include those with fatalities above a certain threshold and select top 20
 threshold_fatalities = edges['FATALITIES'].quantile(0.95)  # Adjust threshold as needed
 filtered_edges = edges[edges['FATALITIES'] > threshold_fatalities].nlargest(20, 'FATALITIES')
+
+
+def event_type_and_fatalities(data):
+    event_fatalities = data.groupby('EVENT_TYPE')['FATALITIES'].sum().reset_index()
+
+    # Also, count the number of occurrences for each event type
+    event_counts = data['EVENT_TYPE'].value_counts().reset_index()
+    event_counts.columns = ['EVENT_TYPE', 'COUNT']
+
+    # Merge both dataframes to have counts and fatalities side by side
+    event_summary = pd.merge(event_fatalities, event_counts, on='EVENT_TYPE')
+
+    # Creating a bar chart
+
+    # fig = px.bar(event_summary, x='EVENT_TYPE', y='COUNT',
+    # hover_data=['FATALITIES'], title='Impact of Different Conflict Events',
+    # labels={'COUNT': 'Number of Events', 'FATALITIES': 'Total Fatalities'})
+
+    # Enhance the graph with additional layout settings
+    # fig.update_layout(
+    # xaxis_title="Event Type",
+    # yaxis_title="Number of Events",
+    # legend_title="Event Types",
+    # xaxis={'categoryorder': 'total descending'},  # This sorts the bars by count
+    # hovermode='closest'  # Enhances hover options
+    # )
+
+    # Create a bar chart for the number of events
+    # fig = go.Figure(go.Bar(
+    # x=event_summary['EVENT_TYPE'],
+    # y=event_summary['COUNT'],
+    # name='Number of Events',
+    # marker=dict(color='lightslategray'),
+    # hoverinfo='skip'  # Hides hover info for the bars
+    # ))
+
+    # Add a scatter plot on top of the bar chart for fatalities
+    # fig.add_trace(go.Scatter(
+    # x=event_summary['EVENT_TYPE'],
+    # y=event_summary['COUNT'],  # Position points at the top of the bars
+    # mode='markers+text',  # Display markers with text
+    # marker=dict(
+    # size=event_summary['FATALITIES']/100,  # Adjust size scaling to your dataset
+    # color='red',
+    # sizemode='area',  # Ensures size of marker corresponds to area
+    # sizeref=2.*max(event_summary['FATALITIES'])/(40.**2),  # Adjusts scaling factor
+    # sizemin=4  # Minimum marker size
+    # ),
+    # text=event_summary['FATALITIES'],  # Fatalities count as text
+    # textposition='top center',  # Position text above the markers
+    # name='Fatalities'
+    # ))
+
+    # Update the layout to add titles and axis labels
+    # fig.update_layout(
+    # title='Impact of Different Conflict Events',
+    # xaxis=dict(title='Event Type'),
+    # yaxis=dict(title='Number of Events'),
+    # legend_title='Data Type',
+    # barmode='overlay'  # Ensures bars and scatter points share the same x-axis
+    # )
+
+    # Create a bar chart for the number of events
+    fig = go.Figure(go.Bar(
+        x=event_summary['EVENT_TYPE'],
+        y=event_summary['COUNT'],
+        name='Number of Events',
+        marker=dict(color='lightslategray'),
+        hoverinfo='skip'  # Hides hover info for the bars
+    ))
+
+    # Add a scatter plot on top of the bar chart for fatalities
+    fig.add_trace(go.Scatter(
+        x=event_summary['EVENT_TYPE'],
+        y=event_summary['FATALITIES'],  # Use actual fatalities for positioning
+        mode='markers+text',  # Display markers with text
+        marker=dict(
+            size=20,  # Fixed size or scale appropriately
+            color='red'
+        ),
+        text=event_summary['FATALITIES'],  # Fatalities count as text
+        textposition='top center',  # Position text above the markers
+        name='Fatalities'
+    ))
+
+    # Update the layout to add titles and axis labels
+    fig.update_layout(
+        title='Impact of Different Conflict Events',
+        xaxis=dict(title='Event Type'),
+        yaxis=dict(title='Number of Events/Fatalities',
+                   range=[0, max(event_summary['COUNT'].max(), event_summary['FATALITIES'].max()) + 50]),
+        legend_title='Data Type',
+        barmode='overlay'  # Ensures bars and scatter points share the same x-axis
+    )
+
+    return fig
+
 
 # Create the graph with filtered data
 G = nx.from_pandas_edgelist(filtered_edges, 'ACTOR1', 'ACTOR2', ['FATALITIES'])
@@ -196,14 +296,17 @@ st.markdown(
 st.markdown(
     "This narrative aims to shed light on the human cost of these conflicts. By looking into data [1] on various types of events such as battles, violent demonstrations, and other forms of political violence. We will tell the story not just about the frequency and types of these events, but their profound impact on civilian populations, from fatalities and injuries to displacement. [2]")
 
-st.markdown('## Event Type Distribution')
+st.markdown('### The real price of conflict: Fatalities')
+
+event_type_and_fatalities = event_type_and_fatalities(data)
+st.plotly_chart(event_type_and_fatalities)
 
 # Display Altair chart
 event_type_chart = plot_event_type_distribution(data)
 st.altair_chart(event_type_chart, use_container_width=True)
 
 
-st.markdown('## Who is responsible?')
+st.markdown('### Who is responsible?')
 
 # Call the function to draw the graph
 graph_viz = draw_graph(G)
@@ -212,7 +315,6 @@ graph_viz = draw_graph(G)
 st.altair_chart(graph_viz, use_container_width=True)
 
 # Display the figures in the Streamlit app
-st.markdown('## Event Animation')
 
 
 animated_bar_fig = animate_yearly_event(data)
@@ -240,6 +342,8 @@ st.write("This trend underscores the evolving nature of the conflict and highlig
 
 
 # Display the animated map
+
+st.markdown('### Nowhere is safe')
 fig = animated_fatalities_map(data)
 st.plotly_chart(fig)
 

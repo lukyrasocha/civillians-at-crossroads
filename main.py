@@ -66,7 +66,8 @@ st.markdown('### The real price of conflict: Fatalities')
 event_type_and_fatalities = event_type_and_fatalities(data)
 st.plotly_chart(event_type_and_fatalities)
 st.markdown(
-    "The persistent volatility of region conflicts continues to exert a profound impact on civilian populations. The graph highlights the severe toll on civilians, with fatalities prominently associated with each type of event. The battles and explosions/remote violence have been the most prevalent and lethal, with over 36,567 and 32,104 recorded events respectively, resulting in substantial fatalities. ")
+    "The persistent volatility of region conflicts continues to deeply affect civilian populations. To gain a deeper insight into how these conflicts impact fatalities, we utilized a double y-axis plot to compare the number of different types of events and their associated fatalities. One axis represents the frequency of events with a bar graph, while the other depicts the number of fatalities with a dot plot. The graph highlights the severe toll on civilians, with fatalities prominently associated with each type of event.") 
+st.markdown("Explosions and remote violence emerge as the most frequent occurrences during this period, while riots are the least common conflict experienced in the region. Of particular note is the prevalence and lethality of battles. Despite occurring less frequently than explosions, battles resulted in significant fatalities. In fact, battles accounted for 36,567 recorded fatalities, surpassing even explosions in their impact on civilian lives.")
 
 # Display the fatalities map
 fatalities_map = fatailities_map(data, gdf)
@@ -141,3 +142,5 @@ st.markdown("1. [ACLED](https://acleddata.com/)")
 st.markdown("2. [War in Ukraine: Two Years On, Attacks Against Civilians on the Rise Again](https://reliefweb.int/report/ukraine/war-ukraine-two-years-attacks-against-civilians-rise-again)")
 
 
+
+# %%

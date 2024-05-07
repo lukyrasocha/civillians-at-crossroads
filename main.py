@@ -61,26 +61,26 @@ st.markdown(
 st.markdown(
     "This narrative aims to shed light on the human cost of these conflicts. By looking into data [1] on various types of events such as battles, violent demonstrations, and other forms of political violence. We will tell the story not just about the frequency and types of these events, but their profound impact on civilian populations, from fatalities and injuries to displacement. [2]")
 
-st.markdown('### The real price of conflict: Fatalities')
 
+
+st.markdown('### The real price of conflict: Fatalities')
 event_type_and_fatalities = event_type_and_fatalities(data)
 st.plotly_chart(event_type_and_fatalities)
-st.markdown(
-    "The persistent volatility of region conflicts continues to deeply affect civilian populations. To gain a deeper insight into how these conflicts impact fatalities, we utilized a double y-axis plot to compare the number of different types of events and their associated fatalities. One axis represents the frequency of events with a bar graph, while the other depicts the number of fatalities with a dot plot. The graph highlights the severe toll on civilians, with fatalities prominently associated with each type of event.") 
+st.markdown("War invariably claims civilian lives. Its lethality is an ever-present reality, with civilians bearing the brunt of conflict. To gain a deeper insight into how these conflicts impact fatalities, we utilized a double y-axis plot to compare the number of different types of events and their associated fatalities. One axis represents the frequency of events with a bar graph, while the other depicts the number of fatalities with a dot plot. The graph highlights the severe toll on civilians, with fatalities prominently associated with each type of event.") 
 st.markdown("Explosions and remote violence emerge as the most frequent occurrences during this period, while riots are the least common conflict experienced in the region. Of particular note is the prevalence and lethality of battles. Despite occurring less frequently than explosions, battles resulted in significant fatalities. In fact, battles accounted for 36,567 recorded fatalities, surpassing even explosions in their impact on civilian lives.")
 
 # Display the fatalities map
 fatalities_map = fatailities_map(data, gdf)
 st.plotly_chart(fatalities_map)
+st.markdown("Before 2022, fatalities were scarce across most regions, with denser concentrations primarily observed in the eastern parts of Ukraine, though the numbers remained relatively low. However, on 24th February 2022, Russia's invasion of Ukraine marked a significant escalation in the ongoing Russo-Ukrainian War from 2014. This pivotal event is reflected in the data, as the number of fatalities sharply increased and became more concentrated, particularly in the central and western regions of Ukraine.")
 
 
 st.markdown('### Who is responsible?')
-
 # Call the function to draw the graph
 graph_viz = draw_graph(G)
-
 # Use Streamlit components to display the visualization
 st.altair_chart(graph_viz, use_container_width=True)
+st.markdown("After gaining a deeper understanding of fatalities, the question of accountability becomes intriguing. Through analysis of the network graph, we can identify the actors responsible for initiating conflicts that result in fatalities and who they frequently engage with. Among these actors, the Military Force of Russia (2000-) stands out for its significant contribution to fatalities, particularly in its engagements with the Military Force of Ukraine (2019-). Surprisingly, the second most common interaction for Russia is with Ukrainian civilians. This is particularly tragic because civilians lack the means to defend themselves, and there are no fatalities caused by civilians themselves.")
 
 st.markdown('### Everyday people, extraordinary circumstances')
 

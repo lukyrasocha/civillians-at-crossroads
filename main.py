@@ -65,7 +65,7 @@ st.markdown(
 
 
 st.markdown('### The real price of conflict')
-st.markdown("War invariably claims civilian lives. Its lethality is an ever-present reality, with civilians bearing the brunt of conflict. To gain a deeper insight into how these conflicts impact fatalities, we utilized a layered plot to compare the number of different types of events and their associated fatalities. The first one represents the frequency of events with a bar graph, while the other depicts the number of fatalities with a scatter plot. The graph highlights the severe toll on civilians, with fatalities prominently associated with each type of event.")
+st.markdown("War invariably claims human lives. Its lethality is an ever-present reality, with civilians bearing the brunt of conflict. To gain a deeper insight into how these conflicts impact fatalities, we utilized a layered plot to compare the number of different types of events and their associated fatalities. The first one represents the frequency of events with a bar graph, while the other depicts the number of fatalities with a scatter plot. The graph highlights the severe toll on civilians, with fatalities prominently associated with each type of event.")
 event_type_and_fatalities = event_type_and_fatalities(data)
 st.plotly_chart(event_type_and_fatalities)
 

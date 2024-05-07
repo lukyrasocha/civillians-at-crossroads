@@ -64,48 +64,50 @@ st.markdown(
     "This narrative aims to shed light on the human cost of these conflicts. By looking into data [1] on various types of events such as battles, violent demonstrations, and other forms of political violence. We will tell the story not just about the frequency and types of these events, but their profound impact on civilian populations, from fatalities and injuries to displacement. [2]")
 
 
+
 st.markdown('### The real price of conflict')
-event_type_and_fatalities = event_type_and_fatalities(data)
-st.plotly_chart(event_type_and_fatalities)
 st.markdown("War invariably claims civilian lives. Its lethality is an ever-present reality, with civilians bearing the brunt of conflict. To gain a deeper insight into how these conflicts impact fatalities, we utilized a double y-axis plot to compare the number of different types of events and their associated fatalities. One axis represents the frequency of events with a bar graph, while the other depicts the number of fatalities with a dot plot. The graph highlights the severe toll on civilians, with fatalities prominently associated with each type of event.")
 st.markdown("Explosions and remote violence emerge as the most frequent occurrences during this period, while riots are the least common conflict experienced in the region. Of particular note is the prevalence and lethality of battles. Despite occurring less frequently than explosions, battles resulted in significant fatalities. In fact, battles accounted for 36,567 recorded fatalities, surpassing even explosions in their impact on civilian lives.")
+event_type_and_fatalities = event_type_and_fatalities(data)
+st.plotly_chart(event_type_and_fatalities)
 
 # Display the fatalities map
+st.markdown("Before 2022, fatalities were scarce across most regions, with denser concentrations primarily observed in the eastern parts of Ukraine, though the numbers remained relatively low. However, on 24th February 2022, Russia's invasion of Ukraine marked a significant escalation in the ongoing Russo-Ukrainian War from 2014. This pivotal event is reflected in the data, as the number of fatalities sharply increased and became more concentrated, particularly in the central and western regions of Ukraine.")
 fatalities_map = fatailities_map(data, gdf)
 st.plotly_chart(fatalities_map)
-st.markdown("Before 2022, fatalities were scarce across most regions, with denser concentrations primarily observed in the eastern parts of Ukraine, though the numbers remained relatively low. However, on 24th February 2022, Russia's invasion of Ukraine marked a significant escalation in the ongoing Russo-Ukrainian War from 2014. This pivotal event is reflected in the data, as the number of fatalities sharply increased and became more concentrated, particularly in the central and western regions of Ukraine.")
+
 
 
 st.markdown('### Who is responsible?')
+st.markdown("After gaining a deeper understanding of fatalities, the question of accountability becomes intriguing. Through analysis of the network graph, we can identify the actors responsible for initiating conflicts that result in fatalities and who they frequently engage with. Among these actors, the Military Force of Russia (2000-) stands out for its significant contribution to fatalities, particularly in its engagements with the Military Force of Ukraine (2019-). Surprisingly, the second most common interaction for Russia is with Ukrainian civilians. This is particularly tragic because civilians lack the means to defend themselves, and there are no fatalities caused by civilians themselves.")
 # Call the function to draw the graph
 graph_viz = draw_graph(G)
 # Use Streamlit components to display the visualization
 st.altair_chart(graph_viz, use_container_width=True)
-st.markdown("After gaining a deeper understanding of fatalities, the question of accountability becomes intriguing. Through analysis of the network graph, we can identify the actors responsible for initiating conflicts that result in fatalities and who they frequently engage with. Among these actors, the Military Force of Russia (2000-) stands out for its significant contribution to fatalities, particularly in its engagements with the Military Force of Ukraine (2019-). Surprisingly, the second most common interaction for Russia is with Ukrainian civilians. This is particularly tragic because civilians lack the means to defend themselves, and there are no fatalities caused by civilians themselves.")
+
 
 
 st.markdown('### Everyday people, extraordinary circumstances')
-
+st.markdown("While the broad numbers of fatalities offer a stark picture of the conflict's severity, they do not fully capture the day-to-day reality faced by civilians. To understand the true human cost, we turn our attention to incidents specifically categorized as 'Violence against civilians'. By examining the different sub-events under this category, we can see more clearly how these conflicts permeate the lives of ordinary people.")
+st.markdown("Based on the plot, we observe a sharp increase in most sub-events after March 2022, coinciding with the escalation of the invasion. 'Shelling/artillery/missile attacks' consistently emerge as the most common form of violence against civilians after 2022. The second most common form of violence varies across different time periods. Following March 2022, the occurrence of 'Air/drone strikes' dwindled and remained low throughout 2022. During this time, incidents involving 'Remote explosive/landmine/IED' surged, temporarily assuming the position of the second most common form of violence. However, their occurrence decreased after September 2023. 'Air/drone strikes', on the other hand, increased after 2023 and subsequently became the second most common form of violence.")
 civilians_fig = plot_violence_against_civilians(data)
 st.plotly_chart(civilians_fig)
 
-st.markdown("While the broad numbers of fatalities offer a stark picture of the conflict's severity, they do not fully capture the day-to-day reality faced by civilians. To understand the true human cost, we turn our attention to incidents specifically categorized as 'Violence against civilians'. By examining the different sub-events under this category, we can see more clearly how these conflicts permeate the lives of ordinary people.")
-st.markdown("Based on the plot, we observe a sharp increase in most sub-events after March 2022, coinciding with the escalation of the invasion. 'Shelling/artillery/missile attacks' consistently emerge as the most common form of violence against civilians after 2022. The second most common form of violence varies across different time periods. Following March 2022, the occurrence of 'Air/drone strikes' dwindled and remained low throughout 2022. During this time, incidents involving 'Remote explosive/landmine/IED' surged, temporarily assuming the position of the second most common form of violence. However, their occurrence decreased after September 2023. 'Air/drone strikes', on the other hand, increased after 2023 and subsequently became the second most common form of violence.")
 
 
 st.markdown('### Nowhere is safe')
-
+st.markdown("The plight of defenseless civilians facing various types of violence daily prompts an important question: Are there any regions where people can flee to seek refuge? Yet the grim truth is that there seems to be nowhere safe to hide. Upon analyzing the map plotting all incidents targeting civilians, it becomes evident that no region in Ukraine has been spared from such violence. What's even more disheartening is that some areas, like Donetsk and Kharkiv, are engulfed in a multitude of conflicts and are almost entirely covered with violence, rendering them particularly unsafe for civilians.")
 animated_geo_fig = animated_map(data, gdf)
 st.plotly_chart(animated_geo_fig)
 
-st.markdown("The defenseless civilian faces various types of violence daily. Therefore, we want to further analyze if there are any regions where people can flee to seek refuge. Yet the grim truth is that there seems to be nowhere safe to hide. Upon analyzing the map plotting all incidents targeting civilians, it becomes evident that no region in Ukraine has been spared from such violence. What's even more disheartening is that some areas, like Donetsk and Kharkiv, are engulfed in a multitude of conflicts and are almost entirely covered with violence, rendering them particularly unsafe for civilians.")
-st.markdown('### Population Distribution')
 
+
+st.markdown('### The Challenge of Protecting Civilians in War')
+st.markdown("In Rule 23 from Customary International Humanitarian Law (CIHL), it states that 'Each party to the conflict must, to the extent feasible, avoid locating military objectives within or near densely populated areas'[3]. We can observe the implications of this principle from the population distribution plot, which shows the population density within 1 square kilometer and the number of incidents targeting civilians in these densely populated regions. The plot reveals that most attacks occurred in regions with a population density of less than 10,000 people per square kilometer, reflecting a commitment to humanitarian principles. However, it's concerning that some incidents still target highly dense regions, resulting in a significant toll on civilian lives.")
 population_distribution = plot_population_distribution(data)
-
 st.altair_chart(population_distribution)
 
-st.markdown('### Average Proximity of Sub-Event Types to Populations')
+st.markdown("If we examine the average population during different types of attacks, it can be observed that most of the lethal and cruel attacks, such as 'Air/drone strikes' or 'Remote explosive/landmine/IED', tend to target less densely populated regions. However, it's concerning to note that grenades have the highest average population among all categories, indicating that they are often thrown in highly populated regions. This poses a direct threat to civilian safety due to their proximity to densely populated areas.")
 average_population = plot_average_population(data)
 st.plotly_chart(average_population)
 
@@ -141,6 +143,6 @@ st.image('./assets/spirals.png', caption='On the left side, we have the number o
 st.markdown("## References")
 st.markdown("1. [ACLED](https://acleddata.com/)")
 st.markdown("2. [War in Ukraine: Two Years On, Attacks Against Civilians on the Rise Again](https://reliefweb.int/report/ukraine/war-ukraine-two-years-attacks-against-civilians-rise-again)")
-
+st.markdown("3. [Customary International Humanitarian Law (CIHL)](https://ihl-databases.icrc.org/en/customary-ihl/v1/rule23)")
 
 # %%

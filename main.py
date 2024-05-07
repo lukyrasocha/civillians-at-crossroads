@@ -110,7 +110,7 @@ st.plotly_chart(animated_geo_fig)
 
 st.markdown('### The Challenge of Protecting Civilians in War')
 st.markdown(
-    "In Rule 23 from Customary International Humanitarian Law (CIHL), it states that *'Each party to the conflict must, to the extent feasible, avoid locating military objectives within or near densely populated areas'*. [3] We can observe the implications of this principle from the population distribution plot, which shows the population density within 1 square kilometer and the number of incidents targeting civilians in these densely populated regions. The plot reveals that most attacks occurred in regions with a population density of less than 10,000 people per square kilometer, reflecting a commitment to humanitarian principles. However, it's concerning that some incidents still target highly dense regions, resulting in a significant toll on civilian lives.")
+    "In Rule 23 from Customary International Humanitarian Law (CIHL), it states that *'Each party to the conflict must, to the extent feasible, avoid locating military objectives within or near densely populated areas'*. [3] We can observe the implications of this principle from the population distribution plot, which shows the population density within 1 kilometer radius and the number of incidents targeting civilians in these densely populated regions. The plot reveals that most attacks occurred in regions with a population density of less than 10,000 people per kilometer radius, reflecting a commitment to humanitarian principles. However, it's concerning that some incidents still target highly dense regions, resulting in a significant toll on civilian lives.")
 population_distribution = plot_population_distribution(data)
 st.altair_chart(population_distribution)
 
@@ -125,13 +125,15 @@ st.markdown('### Protests Over Time')
 protests_over_time = plot_protests_over_time(data)
 
 st.plotly_chart(protests_over_time)
-st.markdown("The conflicts are also reflected in the number of protests happening in the region. The plot shows the number of protests over time, with a clear after 2022. This decrease in protests coincides with the escalation of the conflict, indicating that the ongoing war has had a significant impact on the ability of people to gather and protest. Protests have been used throughout history as a way for people to voice their concerns and push for change. This shows that conflicts not only have a direct impact on the lives of civilians but also on their ability to engage in social and political activism.")
+st.markdown("The conflicts are also reflected in the number of protests happening in the region. The plot shows the number of protests over time, with a clear decline after 2022. This decrease in protests coincides with the escalation of the conflict, indicating that the ongoing war has had a significant impact on the ability of people to gather and protest. Protests have been used throughout history as a way for people to voice their concerns and push for change. This shows that conflicts not only have a direct impact on the lives of civilians but also on their ability to engage in social and political activism.")
 
 # Generate the figure using your custom function
 fig = create_strip_plot(data)
 
 # Use Streamlit's function to display the plot
 st.pyplot(fig)
+
+st.markdown("The data demonstrates that the bulk of violent events unfold from midday to midnight. This pattern reveals not just the persistence of conflict, but also the profound disruption it brings to everyday life. For civilians in the region, the hours when they might otherwise seek rest or engage in family activities are marred by uncertainty and danger. The prevalence of these events during these hours means that no routine can offer solace, and that most parts of the days are touched by the shadow of conflict. It underscores a grim reality: for many, the war is a constant presence, transforming even the most ordinary moments into periods of heightened anxiety and fear.")
 
 html = """
 <div style='width: 100%; display: flex; justify-content: space-between; align-items: center;'>
@@ -147,7 +149,13 @@ html = """
 """
 st.markdown(html, unsafe_allow_html=True)
 st.image('./assets/spirals.png', caption='On the left side, we have the number of deaths, and on the right side, we have the number of refugees. One white dot represents 10 deaths, one yellow dot represents 1000 refugees.')
-st.markdown("The impact of the war in Black Sea Region is deeply distressing, with a rising number of casualties and individuals forced to flee their homes. According to the UNHCR, as of February 2024, approximately 6.5 million refugees from Ukraine have been documented worldwide. This stark reality underscores the severity of the situation and emphasizes the urgent need for global solidarity and support. ")
+
+st.markdown(
+    "As we conclude our examination of the conflicts in the Black Sea region, it's clear that the human costs are immense and far-reaching. Our various data visualizations, including the final spiral plots where each white dot represents 10 fatalities and each yellow dot 1,000 refugees, collectively reveal a grim reality of 70,000 lives lost and about 6.5 million people displaced. [8]")
+
+st.markdown("This narrative has taken us through different aspects of the conflict, from the specific events that trigger violence to the everyday experiences of those caught in its wake. We've seen how conflicts disrupt lives and continue to challenge the resilience of individuals and communities.")
+
+st.markdown("The insights gathered here should propel us towards a concerted effort to mitigate these impacts and support those affected. Let this data story serve as both a record and a reminder of the ongoing human costs of conflict, urging us toward action and empathy in our responses.")
 
 st.markdown("## References")
 st.markdown("1. [ACLED](https://acleddata.com/)")

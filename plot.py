@@ -189,8 +189,6 @@ def fatailities_map(data, gdf):
         size='FATALITIES',  # Use fatalities as size for emphasis
         animation_frame='YEAR',  # animation_group='SUB_EVENT_TYPE',
         title='Evolution of Fatalities in Conflict Events',
-        # hover_name='SUB_EVENT_TYPE',  # Add more hover details as needed
-        # hover_data={'FATALITIES': True, 'YEAR': True},
         size_max=15,  # Adjust max size to fit the visualization
         color_continuous_scale=px.colors.sequential.OrRd  # Use a red-orange color scale
     )

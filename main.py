@@ -110,7 +110,7 @@ st.plotly_chart(animated_geo_fig)
 
 st.markdown('### The Challenge of Protecting Civilians in War')
 st.markdown(
-    "In Rule 23 from Customary International Humanitarian Law (CIHL), it states that *'Each party to the conflict must, to the extent feasible, avoid locating military objectives within or near densely populated areas'*. [3] We can observe the implications of this principle from the population distribution plot, which shows the population density within 1 square kilometer and the number of incidents targeting civilians in these densely populated regions. The plot reveals that most attacks occurred in regions with a population density of less than 10,000 people per square kilometer, reflecting a commitment to humanitarian principles. However, it's concerning that some incidents still target highly dense regions, resulting in a significant toll on civilian lives.")
+    "In Rule 23 from Customary International Humanitarian Law (CIHL), it states that *'Each party to the conflict must, to the extent feasible, avoid locating military objectives within or near densely populated areas'*. [3] We can observe the implications of this principle from the population distribution plot, which shows the population density within 1 kilometer radius and the number of incidents targeting civilians in these densely populated regions. The plot reveals that most attacks occurred in regions with a population density of less than 10,000 people per kilometer radius, reflecting a commitment to humanitarian principles. However, it's concerning that some incidents still target highly dense regions, resulting in a significant toll on civilian lives.")
 population_distribution = plot_population_distribution(data)
 st.altair_chart(population_distribution)
 

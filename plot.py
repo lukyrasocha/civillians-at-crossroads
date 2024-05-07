@@ -210,18 +210,33 @@ def fatailities_map(data, gdf):
 
 # Animation map with region geo info
 def animated_map(data, gdf):
-    min_year = data['YEAR'].min()
-    # Get all unique sub-event types
-    all_event_types = data['EVENT_TYPE'].unique()
-    # Create a DataFrame with dummy rows for each sub-event type for the initial year
-    dummy_rows = pd.DataFrame({'YEAR': [min_year] * len(all_event_types),
-                               'EVENT_TYPE': all_event_types,
-                               'LATITUDE': [0] * len(all_event_types),
-                               'LONGITUDE': [0] * len(all_event_types),
-                               'EVENT_ID_CNTY': ['dummy'] * len(all_event_types)})
+
+    data = data[(data['EVENT_TYPE'] == 'Violence against civilians') |
+                              (data['CIVILIAN_TARGETING'] == 'Civilian targeting')]
     
+    min_year = data['YEAR'].min()
+    max_year = data['YEAR'].max()
+    
+    all_event_types = data['SUB_EVENT_TYPE'].unique()
+    
+    dummy_rows = []
+
+    # Loop through each event type
+    for event_type in all_event_types:
+        for year in range(min_year, max_year + 1):
+            # Check if there are any rows for the current event type and year
+            if len(data[(data['SUB_EVENT_TYPE'] == event_type) & (data['YEAR'] == year)]) == 0:
+                # If no rows exist, create a dummy row
+                dummy_rows.append({
+                    'YEAR': year,
+                    'SUB_EVENT_TYPE': event_type,
+                    'LATITUDE': 0,
+                    'LONGITUDE': 0,
+                    'EVENT_ID_CNTY': 'dummy'
+                })
     # Concatenate the dummy rows with the original filtered_data DataFrame
-    data = pd.concat([data, dummy_rows], ignore_index=True)
+    dummy_df = pd.DataFrame(dummy_rows)
+    data = pd.concat([data, dummy_df], ignore_index=True)
     # order years
     data.sort_values('YEAR', inplace=True)
 
@@ -238,9 +253,8 @@ def animated_map(data, gdf):
 
     # Create a scatter_geo plot using Plotly Express
     scatter_geo = px.scatter_geo(
-        data, lat='LATITUDE', lon='LONGITUDE', color='EVENT_TYPE', animation_frame='YEAR',
-        animation_group='EVENT_TYPE', title='Evolution of Events across Event Type',
-        hover_data={'LATITUDE': False, 'LONGITUDE': False, 'YEAR': False, 'EVENT_TYPE': False})
+        data, lat='LATITUDE', lon='LONGITUDE', color='SUB_EVENT_TYPE', title='Political Violence Against Civilian in the Black Sea Region',
+        hover_data={'LATITUDE': False, 'LONGITUDE': False, 'YEAR': False, 'SUB_EVENT_TYPE': False})
 
     # Add the choropleth traces to the scatter_geo plot
     for trace in choropleth.data:

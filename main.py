@@ -100,7 +100,7 @@ st.markdown('### Nowhere is safe')
 animated_geo_fig = animated_map(data, gdf)
 st.plotly_chart(animated_geo_fig)
 
-# display the distribution of POPULATION_1KM
+st.markdown("The defenseless civilian faces various types of violence daily. Therefore, we want to further analyze if there are any regions where people can flee to seek refuge. Yet the grim truth is that there seems to be nowhere safe to hide. Upon analyzing the map plotting all incidents targeting civilians, it becomes evident that no region in Ukraine has been spared from such violence. What's even more disheartening is that some areas, like Donetsk and Kharkiv, are engulfed in a multitude of conflicts and are almost entirely covered with violence, rendering them particularly unsafe for civilians.")
 st.markdown('### Population Distribution')
 
 population_distribution = plot_population_distribution(data)

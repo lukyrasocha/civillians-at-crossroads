@@ -80,7 +80,7 @@ st.markdown('### Who is responsible?')
 graph_viz = draw_graph(G)
 # Use Streamlit components to display the visualization
 st.altair_chart(graph_viz, use_container_width=True)
-st.markdown('The network graph is ')
+st.markdown("After gaining a deeper understanding of fatalities, the question of accountability becomes intriguing. Through analysis of the network graph, we can identify the actors responsible for initiating conflicts that result in fatalities and who they frequently engage with. Among these actors, the Military Force of Russia (2000-) stands out for its significant contribution to fatalities, particularly in its engagements with the Military Force of Ukraine (2019-). Surprisingly, the second most common interaction for Russia is with Ukrainian civilians. This is particularly tragic because civilians lack the means to defend themselves, and there are no fatalities caused by civilians themselves.")
 
 st.markdown('### Everyday people, extraordinary circumstances')
 

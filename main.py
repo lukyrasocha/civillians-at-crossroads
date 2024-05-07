@@ -82,8 +82,6 @@ graph_viz = draw_graph(G)
 st.altair_chart(graph_viz, use_container_width=True)
 st.markdown("After gaining a deeper understanding of fatalities, the question of accountability becomes intriguing. Through analysis of the network graph, we can identify the actors responsible for initiating conflicts that result in fatalities and who they frequently engage with. Among these actors, the Military Force of Russia (2000-) stands out for its significant contribution to fatalities, particularly in its engagements with the Military Force of Ukraine (2019-). Surprisingly, the second most common interaction for Russia is with Ukrainian civilians. This is particularly tragic because civilians lack the means to defend themselves, and there are no fatalities caused by civilians themselves.")
 
-st.markdown("In our analysis of fatalities across the region, we've identified various actors responsible for these tragic incidents, sourced directly from our dataset. Notably, the highest number of fatalities, totaling 33,777, was attributed to the Military Force of Russia. Following closely, the Military Forces of Ukraine emerged as the second-largest contributor to fatalities, accounting for a total of 22,272 casualties. In addition to the aforementioned actors, it's crucial to highlight the significant impact of the Military Forces of Russia - Air Force, which were responsible for 7,682 fatalities as depicted on the map.")
-
 st.markdown('### Everyday people, extraordinary circumstances')
 
 civilians_fig = plot_violence_against_civilians(data)

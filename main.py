@@ -64,18 +64,17 @@ st.markdown(
     "This narrative aims to shed light on the human cost of these conflicts. By looking into data [1] on various types of events such as battles, violent demonstrations, and other forms of political violence. We will tell the story not just about the frequency and types of these events, but their profound impact on civilian populations, from fatalities and injuries to displacement. [2]")
 
 
-
 st.markdown('### The real price of conflict')
-st.markdown("War invariably claims civilian lives. Its lethality is an ever-present reality, with civilians bearing the brunt of conflict. To gain a deeper insight into how these conflicts impact fatalities, we utilized a double y-axis plot to compare the number of different types of events and their associated fatalities. One axis represents the frequency of events with a bar graph, while the other depicts the number of fatalities with a dot plot. The graph highlights the severe toll on civilians, with fatalities prominently associated with each type of event.")
-st.markdown("Explosions and remote violence emerge as the most frequent occurrences during this period, while riots are the least common conflict experienced in the region. Of particular note is the prevalence and lethality of battles. Despite occurring less frequently than explosions, battles resulted in significant fatalities. In fact, battles accounted for 36,567 recorded fatalities, surpassing even explosions in their impact on civilian lives.")
+st.markdown("War invariably claims civilian lives. Its lethality is an ever-present reality, with civilians bearing the brunt of conflict. To gain a deeper insight into how these conflicts impact fatalities, we utilized a layered plot to compare the number of different types of events and their associated fatalities. The first one represents the frequency of events with a bar graph, while the other depicts the number of fatalities with a scatter plot. The graph highlights the severe toll on civilians, with fatalities prominently associated with each type of event.")
 event_type_and_fatalities = event_type_and_fatalities(data)
 st.plotly_chart(event_type_and_fatalities)
+
+st.markdown("Explosions and remote violence emerge as the most frequent occurrences during this period, while riots are the least common conflict experienced in the region. This is naturally not a surprise due the inherent violent natures of such event types together with the frequency with which they have been employed throughout the conflicts. While battles primarily impact military actors,  explosions and remote violence (including grenades, shelling, missile and drone attacks etc.) widely affects military actors and civilians alike not only in terms of fatalities but also with regard to the insecurities and fear felt by people presiding in such perilous environments. Of particular note is the prevalence and lethality of battles. Despite occurring less frequently than explosions, battles resulted in significant fatalities. In fact, battles accounted for 36,567 recorded fatalities, surpassing even explosions in their impact on human lives.")
 
 # Display the fatalities map
 st.markdown("Before 2022, fatalities were scarce across most regions, with denser concentrations primarily observed in the eastern parts of Ukraine, though the numbers remained relatively low. However, on 24th February 2022, Russia's invasion of Ukraine marked a significant escalation in the ongoing Russo-Ukrainian War from 2014. This pivotal event is reflected in the data, as the number of fatalities sharply increased and became more concentrated, particularly in the central and western regions of Ukraine.")
 fatalities_map = fatailities_map(data, gdf)
 st.plotly_chart(fatalities_map)
-
 
 
 st.markdown('### Who is responsible?')
@@ -86,13 +85,11 @@ graph_viz = draw_graph(G)
 st.altair_chart(graph_viz, use_container_width=True)
 
 
-
 st.markdown('### Everyday people, extraordinary circumstances')
 st.markdown("While the broad numbers of fatalities offer a stark picture of the conflict's severity, they do not fully capture the day-to-day reality faced by civilians. To understand the true human cost, we turn our attention to incidents specifically categorized as 'Violence against civilians'. By examining the different sub-events under this category, we can see more clearly how these conflicts permeate the lives of ordinary people.")
 st.markdown("Based on the plot, we observe a sharp increase in most sub-events after March 2022, coinciding with the escalation of the invasion. 'Shelling/artillery/missile attacks' consistently emerge as the most common form of violence against civilians after 2022. The second most common form of violence varies across different time periods. Following March 2022, the occurrence of 'Air/drone strikes' dwindled and remained low throughout 2022. During this time, incidents involving 'Remote explosive/landmine/IED' surged, temporarily assuming the position of the second most common form of violence. However, their occurrence decreased after September 2023. 'Air/drone strikes', on the other hand, increased after 2023 and subsequently became the second most common form of violence.")
 civilians_fig = plot_violence_against_civilians(data)
 st.plotly_chart(civilians_fig)
-
 
 
 st.markdown('### Nowhere is safe')
@@ -101,9 +98,9 @@ animated_geo_fig = animated_map(data, gdf)
 st.plotly_chart(animated_geo_fig)
 
 
-
 st.markdown('### The Challenge of Protecting Civilians in War')
-st.markdown("In Rule 23 from Customary International Humanitarian Law (CIHL), it states that 'Each party to the conflict must, to the extent feasible, avoid locating military objectives within or near densely populated areas'[3]. We can observe the implications of this principle from the population distribution plot, which shows the population density within 1 square kilometer and the number of incidents targeting civilians in these densely populated regions. The plot reveals that most attacks occurred in regions with a population density of less than 10,000 people per square kilometer, reflecting a commitment to humanitarian principles. However, it's concerning that some incidents still target highly dense regions, resulting in a significant toll on civilian lives.")
+st.markdown(
+    "In Rule 23 from Customary International Humanitarian Law (CIHL), it states that 'Each party to the conflict must, to the extent feasible, avoid locating military objectives within or near densely populated areas'[3]. We can observe the implications of this principle from the population distribution plot, which shows the population density within 1 square kilometer and the number of incidents targeting civilians in these densely populated regions. The plot reveals that most attacks occurred in regions with a population density of less than 10,000 people per square kilometer, reflecting a commitment to humanitarian principles. However, it's concerning that some incidents still target highly dense regions, resulting in a significant toll on civilian lives.")
 population_distribution = plot_population_distribution(data)
 st.altair_chart(population_distribution)
 

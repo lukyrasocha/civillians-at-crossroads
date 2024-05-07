@@ -27,12 +27,15 @@ def plot_event_type_distribution(data):
 
 
 def plot_population_distribution(data):
-    chart = alt.Chart(data, width=800).mark_bar().encode(
+    chart = alt.Chart(data, width=680).mark_bar().encode(
         y='count()',
         x=alt.Y('POPULATION_1KM', sort='-x'),
-        color='POPULATION_1KM',
         tooltip=['POPULATION_1KM', 'count()']
     ).properties(title='Population Distribution')
+
+    # change colour of bars to slategrey
+    chart = chart.configure_mark(color='white')
+
     return chart
 
 # Use the timestamp to plot the events occurences per each hour of the day
@@ -122,11 +125,13 @@ def plot_average_population(data):
                  labels={'POPULATION_BEST': 'Average Population Distance (Best Estimate)',
                          'SUB_EVENT_TYPE': 'Sub-Event Type'})
 
+    # change colour of bars to slategrey
+    fig.update_traces(marker_color='slategrey')
+
     return fig
 
 
 def plot_violence_against_civilians(data):
-    # Filter the data for violence against civilians
     # Filter the data for where EVENT_TYPE is 'Violence against civilians' or CIVILIAN_TARGETING is equal to Civilian targeting
     violence_civilians = data[(data['EVENT_TYPE'] == 'Violence against civilians') |
                               (data['CIVILIAN_TARGETING'] == 'Civilian targeting')]
@@ -179,6 +184,8 @@ def animate_yearly_event(data):
     return fig
 
 # fatalities map
+
+
 def fatailities_map(data, gdf):
     data = data[data['FATALITIES'] > 0]
     # order years
@@ -186,39 +193,41 @@ def fatailities_map(data, gdf):
 
     scatter_geo = px.scatter_geo(
         data, lat='LATITUDE', lon='LONGITUDE', color='FATALITIES',
-        size='FATALITIES',  # Use fatalities as size for emphasis
-        animation_frame='YEAR',  # animation_group='SUB_EVENT_TYPE',
-        title='Evolution of Fatalities in Conflict Events',
-        size_max=15,  # Adjust max size to fit the visualization
-        color_continuous_scale=px.colors.sequential.OrRd  # Use a red-orange color scale
+        size='FATALITIES',
+        animation_frame='YEAR',
+        title='Evolution of all Fatalities',
+        size_max=15,
+        color_continuous_scale=px.colors.sequential.OrRd
     )
     scatter_geo.update_layout(
         autosize=True,
         height=700,
         geo=dict(
-            center=dict(lat=47.2, lon=31.1),  # Adjust center if needed
-            scope='europe',  # Ensure the scope is correct for your data
-            projection_scale=6,  # Adjust scale for visibility
-            bgcolor='rgba(0, 0, 0, 0)',  # Optional: Transparent background
+            center=dict(lat=47.2, lon=31.1),
+            scope='europe',
+            projection_scale=6,
+            bgcolor='rgba(0, 0, 0, 0)',
         ),
-        plot_bgcolor='rgba(0, 0, 0, 0)',  # Optional: Transparent plot background
-        paper_bgcolor='rgba(0, 0, 0, 0)',  # Optional: Transparent paper background
-        font=dict(color='white'),  # Adjust font color for visibility
+        plot_bgcolor='rgba(0, 0, 0, 0)',
+        paper_bgcolor='rgba(0, 0, 0, 0)',
+        font=dict(color='white'),
     )
 
     return scatter_geo
 
 # Animation map with region geo info
+
+
 def animated_map(data, gdf):
 
     data = data[(data['EVENT_TYPE'] == 'Violence against civilians') |
-                              (data['CIVILIAN_TARGETING'] == 'Civilian targeting')]
-    
+                (data['CIVILIAN_TARGETING'] == 'Civilian targeting')]
+
     min_year = data['YEAR'].min()
     max_year = data['YEAR'].max()
-    
+
     all_event_types = data['SUB_EVENT_TYPE'].unique()
-    
+
     dummy_rows = []
 
     # Loop through each event type
@@ -244,7 +253,7 @@ def animated_map(data, gdf):
     choropleth = go.Figure(go.Choropleth(
         geojson=json.loads(gdf.to_json()),
         locations=gdf.index,
-        z=[0] * len(gdf),  
+        z=[0] * len(gdf),
         hovertext=gdf['name'],  # Add hover text
         hoverinfo='text',  # Show only hover text
         marker_line=dict(width=1, color='grey'),  # Set marker line width to 1 to display only the outline
@@ -253,7 +262,8 @@ def animated_map(data, gdf):
 
     # Create a scatter_geo plot using Plotly Express
     scatter_geo = px.scatter_geo(
-        data, lat='LATITUDE', lon='LONGITUDE', color='SUB_EVENT_TYPE', title='Political Violence Against Civilian in the Black Sea Region',
+        data, lat='LATITUDE', lon='LONGITUDE', color='SUB_EVENT_TYPE',
+        title='Political Violence Against Civilian in the Black Sea Region',
         hover_data={'LATITUDE': False, 'LONGITUDE': False, 'YEAR': False, 'SUB_EVENT_TYPE': False})
 
     # Add the choropleth traces to the scatter_geo plot
@@ -265,9 +275,9 @@ def animated_map(data, gdf):
         autosize=True,
         height=800,
         geo=dict(
-            center=dict(lat=47.2, lon=31.1),  
-            scope='europe',  
-            projection_scale=5.5,  
+            center=dict(lat=47.2, lon=31.1),
+            scope='europe',
+            projection_scale=5.5,
             bgcolor='rgba(0, 0, 0, 0)',  # Set background color to transparent
         ),
         plot_bgcolor='rgba(0, 0, 0, 0)',  # Set plot background color to transparent
@@ -318,6 +328,7 @@ def create_strip_plot(data):
     # Instead of plt.show(), return the figure to be used by Streamlit
     return plt.gcf()
 
+
 def event_type_and_fatalities(data):
     event_fatalities = data.groupby('EVENT_TYPE')['FATALITIES'].sum().reset_index()
 
@@ -362,7 +373,7 @@ def event_type_and_fatalities(data):
 
     # Update the layout to add titles and axis labels
     fig.update_layout(
-        title='Impact of Different Conflict Events',
+        title='Impact of Different Conflict Events on Fatalities from 2018 until the present',
         xaxis=dict(title='Event Type'),
         yaxis=dict(title='Number of Events/Fatalities',
                    range=[0, max(event_summary['COUNT'].max(), event_summary['FATALITIES'].max()) + 50]),

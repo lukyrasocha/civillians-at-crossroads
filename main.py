@@ -114,7 +114,7 @@ st.markdown('### Protests Over Time')
 protests_over_time = plot_protests_over_time(data)
 
 st.plotly_chart(protests_over_time)
-
+st.markdown("From 2018 to 2021, there was a steady increase in protests, indicating a growing trend of people coming together to voice their concerns and push for change. However, everything changed after 2022 when the conflict escalated. The number of protests dropped significantly during this time. Between May 2022 and October 2023, there were very few protests happening. This decrease coincided with the worsening situation of the war, which made people less likely to gather and protest. The danger and uncertainty caused by the conflict overshadowed the desire for social and political activism.")
 # Generate the figure using your custom function
 fig = create_strip_plot(data)
 

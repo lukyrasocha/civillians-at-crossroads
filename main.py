@@ -82,6 +82,8 @@ graph_viz = draw_graph(G)
 # Use Streamlit components to display the visualization
 st.altair_chart(graph_viz, use_container_width=True)
 
+st.markdown("In our analysis of fatalities across the region, we've identified various actors responsible for these tragic incidents, sourced directly from our dataset. Notably, the highest number of fatalities, totaling 33,777, was attributed to the Military Force of Russia. Following closely, the Military Forces of Ukraine emerged as the second-largest contributor to fatalities, accounting for a total of 22,272 casualties. In addition to the aforementioned actors, it's crucial to highlight the significant impact of the Military Forces of Russia - Air Force, which were responsible for 7,682 fatalities as depicted on the map.")
+
 st.markdown('### Everyday people, extraordinary circumstances')
 
 civilians_fig = plot_violence_against_civilians(data)

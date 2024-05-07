@@ -34,7 +34,7 @@ def plot_population_distribution(data):
         y='count()',
         x=alt.Y('POPULATION_1KM', sort='-x'),
         tooltip=['POPULATION_1KM', 'count()']
-    ).properties(title='Population Distribution')
+    ).properties(title='Population Distribution in 1km Radius of Events')
 
     # change colour of bars to slategrey
     chart = chart.configure_mark(color='white')
@@ -266,7 +266,7 @@ def animated_map(data, gdf):
     # Create a scatter_geo plot using Plotly Express
     scatter_geo = px.scatter_geo(
         data, lat='LATITUDE', lon='LONGITUDE', color='SUB_EVENT_TYPE',
-        title='Political Violence Against Civilian in the Black Sea Region',
+        title='Political Violence Against Civilians in the Black Sea Region',
         hover_data={'LATITUDE': False, 'LONGITUDE': False, 'YEAR': False, 'SUB_EVENT_TYPE': False})
 
     # Add the choropleth traces to the scatter_geo plot

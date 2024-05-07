@@ -1,3 +1,4 @@
+# %%
 import json
 import pandas as pd
 import numpy as np
@@ -17,12 +18,22 @@ from math import radians, cos, sin, asin, sqrt, log
 # Load data
 
 
+def data_preprocessing(data):
+    # Convert event date to datetime format
+    data['EVENT_DATE'] = pd.to_datetime(data['EVENT_DATE'])
+    # Convert lat, lon to correct delimiter 
+    data['LATITUDE'] = pd.to_numeric(data['LATITUDE'].str.replace(',', '.'), errors='coerce')
+    data['LONGITUDE'] = pd.to_numeric(data['LONGITUDE'].str.replace(',', '.'), errors='coerce')
+    
+    return data
+
+
+# %%
 @st.cache_data
 def load_data():
     data = pd.read_csv('data.csv', sep=';')
-    data['EVENT_DATE'] = pd.to_datetime(data['EVENT_DATE'])
-    data['LATITUDE'] = data['LATITUDE'].str.replace(',', '.')
-    data['LONGITUDE'] = data['LONGITUDE'].str.replace(',', '.')
+    
+    data = data_preprocessing(data)
     return data
 
 

@@ -135,7 +135,7 @@ html = """
 """
 st.markdown(html, unsafe_allow_html=True)
 st.image('./assets/spirals.png', caption='On the left side, we have the number of deaths, and on the right side, we have the number of refugees. One white dot represents 10 deaths, one yellow dot represents 1000 refugees.')
-
+st.markdown("The impact of the war in Black Sea Region is deeply distressing, with a rising number of casualties and individuals forced to flee their homes. According to the UNHCR, as of February 2024, approximately 6.5 million refugees from Ukraine have been documented worldwide. This stark reality underscores the severity of the situation and emphasizes the urgent need for global solidarity and support. ")
 
 st.markdown("## References")
 st.markdown("1. [ACLED](https://acleddata.com/)")

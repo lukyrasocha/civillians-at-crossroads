@@ -85,25 +85,24 @@ st.markdown("After gaining a deeper understanding of fatalities, the question of
 
 
 st.markdown('### Everyday people, extraordinary circumstances')
-
 civilians_fig = plot_violence_against_civilians(data)
 st.plotly_chart(civilians_fig)
-
 st.markdown("While the broad numbers of fatalities offer a stark picture of the conflict's severity, they do not fully capture the day-to-day reality faced by civilians. To understand the true human cost, we turn our attention to incidents specifically categorized as 'Violence against civilians'. By examining the different sub-events under this category, we can see more clearly how these conflicts permeate the lives of ordinary people.")
 st.markdown("Based on the plot, we observe a sharp increase in most sub-events after March 2022, coinciding with the escalation of the invasion. 'Shelling/artillery/missile attacks' consistently emerge as the most common form of violence against civilians after 2022. The second most common form of violence varies across different time periods. Following March 2022, the occurrence of 'Air/drone strikes' dwindled and remained low throughout 2022. During this time, incidents involving 'Remote explosive/landmine/IED' surged, temporarily assuming the position of the second most common form of violence. However, their occurrence decreased after September 2023. 'Air/drone strikes', on the other hand, increased after 2023 and subsequently became the second most common form of violence.")
 
 
-st.markdown('### Nowhere is safe')
 
+st.markdown('### Nowhere is safe')
 animated_geo_fig = animated_map(data, gdf)
 st.plotly_chart(animated_geo_fig)
+st.markdown("The plight of defenseless civilians facing various types of violence daily prompts an important question: Are there any regions where people can flee to seek refuge? Yet the grim truth is that there seems to be nowhere safe to hide. Upon analyzing the map plotting all incidents targeting civilians, it becomes evident that no region in Ukraine has been spared from such violence. What's even more disheartening is that some areas, like Donetsk and Kharkiv, are engulfed in a multitude of conflicts and are almost entirely covered with violence, rendering them particularly unsafe for civilians.")
 
-st.markdown("The defenseless civilian faces various types of violence daily. Therefore, we want to further analyze if there are any regions where people can flee to seek refuge. Yet the grim truth is that there seems to be nowhere safe to hide. Upon analyzing the map plotting all incidents targeting civilians, it becomes evident that no region in Ukraine has been spared from such violence. What's even more disheartening is that some areas, like Donetsk and Kharkiv, are engulfed in a multitude of conflicts and are almost entirely covered with violence, rendering them particularly unsafe for civilians.")
+
+
 st.markdown('### Population Distribution')
-
 population_distribution = plot_population_distribution(data)
-
 st.altair_chart(population_distribution)
+st.markdown("In Rule 23 from Customary International Humanitarian Law (CIHL), it states that 'Each party to the conflict must, to the extent feasible, avoid locating military objectives within or near densely populated areas'[3]. We can observe the implications of this principle from the population distribution plot, which shows the population density within 1 square kilometer and the number of incidents targeting civilians in these densely populated regions. The plot reveals that most attacks occurred in regions with a population density of less than 10,000 people per square kilometer, reflecting a commitment to humanitarian principles. However, it's concerning that some incidents still target highly dense regions, resulting in a significant toll on civilian lives.")
 
 st.markdown('### Average Proximity of Sub-Event Types to Populations')
 average_population = plot_average_population(data)
@@ -141,6 +140,6 @@ st.image('./assets/spirals.png', caption='On the left side, we have the number o
 st.markdown("## References")
 st.markdown("1. [ACLED](https://acleddata.com/)")
 st.markdown("2. [War in Ukraine: Two Years On, Attacks Against Civilians on the Rise Again](https://reliefweb.int/report/ukraine/war-ukraine-two-years-attacks-against-civilians-rise-again)")
-
+st.markdown("3. [Customary International Humanitarian Law (CIHL)](https://ihl-databases.icrc.org/en/customary-ihl/v1/rule23)")
 
 # %%

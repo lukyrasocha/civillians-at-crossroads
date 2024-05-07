@@ -373,6 +373,7 @@ def plot_correlation(data):
 
     return fig
 
+
 def draw_graph(G):
     # Position nodes using the spring layout algorithm
     pos = nx.spring_layout(G, seed=22)

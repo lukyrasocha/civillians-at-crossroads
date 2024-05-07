@@ -27,7 +27,10 @@ def plot_event_type_distribution(data):
 
 
 def plot_population_distribution(data):
-    chart = alt.Chart(data, width=680).mark_bar().encode(
+
+    violence_civilians = data[(data['EVENT_TYPE'] == 'Violence against civilians') |
+                              (data['CIVILIAN_TARGETING'] == 'Civilian targeting')]
+    chart = alt.Chart(violence_civilians, width=680).mark_bar().encode(
         y='count()',
         x=alt.Y('POPULATION_1KM', sort='-x'),
         tooltip=['POPULATION_1KM', 'count()']

@@ -1,5 +1,5 @@
-# Use an official Python runtime as a parent image
-FROM python:3.8-slim
+# Use an official Python runtime as a parent image (Python 3.10+)
+FROM python:3.10-slim
 
 # Set the working directory in the container
 WORKDIR /app
@@ -20,6 +20,7 @@ ENV C_INCLUDE_PATH=/usr/include/gdal
 
 # Copy the requirements file into the container at /app
 COPY requirements.txt /app/
+COPY region.geojson /app/
 
 # Install any needed packages specified in requirements.txt
 RUN pip install --no-cache-dir -r requirements.txt

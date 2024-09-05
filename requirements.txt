@@ -8,3 +8,4 @@ geopandas
 seaborn
 networkx
 nx_altair
+fiona

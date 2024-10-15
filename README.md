@@ -5,6 +5,6 @@ See the deployed website visualization [here](https://cost-of-war-in-the-black-s
 
 ### Run locally 🚀
 
-`pip install streamlit`
+`pip install -r requirements.txt`
 
 `streamlit run main.py`
